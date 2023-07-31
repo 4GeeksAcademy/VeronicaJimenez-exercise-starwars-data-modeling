@@ -16,6 +16,15 @@ class User(Base):
     first_name = Column(String(250))
     last_name = Column(String(250))
     email = Column(String(250), nullable=False)
+    favorites = relationship ('Favorites', backref = 'favorites', lazy=True)  
+
+class Favorites(Base):
+    __tablename__ = 'favorites'
+    id = Column (Integer, primary_key=True)
+    planets = relationship ('Planets', backref='favorites', lazy=True)
+    Characters = relationship ('Characters', backref='favorites', lazy=True)
+    user_id = Column (Integer, ForeignKey('user.id'), nullable=False)
+      
 
 class Characters(Base):
     __tablename__ = 'characters'
@@ -28,11 +37,10 @@ class Characters(Base):
     gender = Column(String(250))
     hair_color = Column(String(250))
     height =  Column(Integer)
-    homeworld = relationship('Planets',secondary='characters_planets' ,back_populates='characters')
     mass = Column(Integer)
+    planets = relationship('Planets',backref='characters', lazy=True)
+    favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
     
-    favorites_id = Column (Integer, ForeignKey('favorites.id'))
-    favorites = relationship ('Favorites', back_populates = 'characters')
 
 
 class Planets(Base):
@@ -45,24 +53,9 @@ class Planets(Base):
     name = Column(String(250), nullable=False)
     orbital_period = Column(Integer)
     population = Column(Integer)
-    residents = relationship ('Characters', secondary='characters_planets',back_populates = 'planets')
-    
-    favorites_id = Column (Integer, ForeignKey('favorites.id'))
-    favorites = relationship ('Favorites', back_populates = 'planets')
-
-class CharactersPlanets(Base):
-     __tablename__ = 'characters_planets'
-     characters_id = Column(Integer, ForeignKey('characters.id'), primary_key=True)
-     planet_id = Column(Integer, ForeignKey('planets.id'), primary_key=True)     
-
-class Favorites(Base):
-    __tablename__ = 'favorites'
-    id = Column (Integer, primary_key=True)
-    favorites_planets = relationship ('Planets', back_populates='favorites')
-    favorites_characters = relationship ('Characters', back_populates='favorites')
-    user_id = Column (Integer, ForeignKey('user.id'))
-    user = relationship ('User', back_populates = 'favorites')
-
+    characters_id = Column (Integer, ForeignKey('characters.id'), nullable=False) 
+    favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
+   
     def to_dict(self):
         return {}
 
