@@ -21,9 +21,11 @@ class User(Base):
 class Favorites(Base):
     __tablename__ = 'favorites'
     id = Column (Integer, primary_key=True)
-    planets = relationship ('Planets', backref='favorites', lazy=True)
-    Characters = relationship ('Characters', backref='favorites', lazy=True)
+   #planets = relationship ('Planets', backref='favorites', lazy=True)
+    #Characters = relationship ('Characters', backref='favorites', lazy=True)
     user_id = Column (Integer, ForeignKey('user.id'), nullable=False)
+    characters_id = Column (Integer, ForeignKey('characters.id'), nullable=False)
+    planets_id = Column (Integer, ForeignKey('planets.id'), nullable=False)
       
 
 class Characters(Base):
@@ -38,9 +40,9 @@ class Characters(Base):
     hair_color = Column(String(250))
     height =  Column(Integer)
     mass = Column(Integer)
-    planets_id = Column (Integer, ForeignKey('planets.id'), nullable=False) 
-    favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
-    
+    #planets_id = Column (Integer, ForeignKey('planets.id'), nullable=False) 
+    #favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
+    favorites = relationship('Favorites')
 
 
 class Planets(Base):
@@ -53,8 +55,9 @@ class Planets(Base):
     name = Column(String(250), nullable=False)
     orbital_period = Column(Integer)
     population = Column(Integer)
-    characters = relationship('Characters',backref='planets', lazy=True)
-    favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
+    #characters = relationship('Characters',backref='planets', lazy=True)
+    #favorites_id = Column (Integer, ForeignKey('favorites.id'), nullable=False)
+    favorites = relationship('Favorites')
    
     def to_dict(self):
         return {}
